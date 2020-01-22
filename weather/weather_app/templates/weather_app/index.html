@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Weather</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.6.2/css/bulma.css"/>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+          integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+            integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+            crossorigin="anonymous"></script>
+</head>
+<body>
+<link rel="stylesheet" href="{% static 'weather.css' %}">
+<section class="hero is-primary">
+    <div class="hero-body">
+        <div class="container">
+            <h1 class="title">
+                <p style="text-align:left;">
+                    What's the weather like?
+                    <span style="float:right;">
+        {% now "d M Y  H:i" %}
+    </span>
+                </p>
+            </h1>
+        </div>
+    </div>
+</section>
+<!--<section class="section">-->
+<div class="container">
+    <div class="column">
+        <div class="column is-offset-4 is-4">
+            <form method="POST">
+                {% csrf_token %}
+                <div class="field has-addons">
+                    <div class="control is-expanded">
+                        {{ form.name }}
+                    </div>
+                    <div class='control'>
+                        <button type="submit" class="button is-info">Submit</button>
+                    </div>
+                </div>
+                {% if message %}
+                <div class="notification {{ message_class }}">{{ message }}</div>
+                {% endif %}
+            </form>
+        </div>
+    </div>
+</div>
+<!--</section>-->
+<!--<section class="section">-->
+<div class="container">
+    <div class="column">
+        <div class="column is-offset-4 is-4">
+            {% if City.name not in weather_data %}
+            {% for city_weather in weather_data %}
+            <div class="box">
+                <article class="media">
+                    <div class="media-left">
+                        <figure class="image is-50x50">
+                            <img src="http://openweathermap.org/img/w/{{city_weather.icon}}.png" alt="Image"
+                                 style="width:70px;height:70px;">
+                        </figure>
+                    </div>
+                    <div class="media-content">
+                        <div class="content">
+                            <p>
+                                <span class="title">{{ city_weather.city }} </span>
+                                <br>
+                                <span class="title">{{ city_weather.temperature }}° C</span>
+                                <br><span class="subtitle"> {{ city_weather.description }}</span>
+                                <br><span class="subtitle"> Wind speed: {{ city_weather.wind_speed }} km/h</span>
+                                <br><span class="subtitle"> Air pressure: {{ city_weather.pressure }} hPa</span>
+                                <br><span class="subtitle"> Feels like: {{ city_weather.feels_like }}° C</span>
+                                <br><span class="subtitle"> Humidity {{ city_weather.humidity }} %</span>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="media-right">
+                        <a href="{% url 'delete_city' city_weather.city %}">
+                            <button class="delete"></button>
+                        </a>
+                    </div>
+                </article>
+            </div>
+            {% endfor %}
+            {% endif %}
+        </div>
+    </div>
+</div>
+<!--</section>-->
+<footer class="footer">
+</footer>
+<script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
+<script src="static/script.js"></script>
+</body>
+</html>
